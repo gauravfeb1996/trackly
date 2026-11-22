@@ -1,0 +1,51 @@
+---
+description: Rules for converting Figma designs into Next.js, Tailwind CSS, shadcn/ui, and Zod components
+globs: app/**/*.tsx, src/app/**/*.tsx
+alwaysApply: false
+---
+
+# Next.js + Tailwind + shadcn/ui + Zod Figma Guidelines
+
+## Tech Stack & Next.js Conventions
+
+- Use **Next.js (App Router)** with **TypeScript** and **Tailwind CSS**.
+- Default to **React Server Components (RSC)**. Only add `"use client"` when using React hooks, browser APIs, event handlers, or interactive forms.
+- Use `next/image` for raster images and `next/link` for internal navigation.
+
+## Component Structure & shadcn/ui
+
+- **shadcn/ui Location:** All base UI primitives live in `app/_components/ui` (import via `@/app/_components/ui/...`).
+- **Reuse First:** Always inspect `app/_components/ui` before writing raw HTML elements. Reuse existing `Button`, `Card`, `Input`, `Badge`, `Dialog`, `Select`, and `Form` components.
+- **Installing Missing Primitives:** If a Figma design needs a shadcn primitive not yet in `app/_components/ui`, run or suggest `npx shadcn@latest add <component>`.
+- **Feature Components:** Place custom section or feature components in `app/_components/` (or route-specific `_components/` folders), keeping `app/_components/ui` strictly for shadcn primitives.
+- Use `lucide-react` for UI icons.
+
+## Custom Colors & CSS Variables (`globals.css`)
+
+- **Single Source of Truth:** Before writing color classes, always inspect `@app/globals.css` (or `@src/app/globals.css`) to check available CSS variables (`:root`, `.dark`, and `@theme inline` tokens).
+- **No Hardcoded Colors:** Never use raw hex/RGB values (e.g., `#1E293B`, `bg-[#...]`) in `.tsx` files. Map Figma color tokens directly to the semantic utility classes backed by our `globals.css` variables (e.g., `bg-background`, `text-foreground`, `bg-primary`, `text-muted-foreground`, `border-border`, or custom tokens defined in `@theme` / `tailwind.config`).
+- **Adding New Brand Colors:** If a Figma frame introduces a new brand color not yet in `globals.css`, add the CSS variable under `:root` (and `.dark` if applicable) in `globals.css` and register it in `@theme inline` (Tailwind v4) or `tailwind.config.ts` (Tailwind v3) before using its utility class.
+
+## Forms & Validation (Zod + React Hook Form)
+
+- **Standard Form Stack:** Build all Figma forms, inputs, and modals with forms using `react-hook-form`, `@hookform/resolvers/zod`, and `zod`.
+- **shadcn Form Wrapper:** Always wrap form fields using `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, and `FormMessage` from `@/app/_components/ui/form`.
+- **Schema Co-location:** Define clear, strongly-typed `z.object({...})` schemas with descriptive validation messages, inferring TypeScript types via `z.infer<typeof formSchema>`. Place reusable schemas in `lib/validations/` or at the top of the feature form file.
+- **Submit & Error States:** Style error states using semantic `text-destructive` / `border-destructive` tokens and disable submit buttons with loading indicators during async actions.
+
+## Layout & Spacing
+
+- Use `cn()` from `@/lib/utils` for conditional classes and `className` prop merging.
+- Convert Figma Auto Layout into Flexbox (`flex`, `flex-col`, `gap-*`) or CSS Grid (`grid`, `grid-cols-*`).
+- Snap Figma pixel spacing to standard Tailwind scale classes (`p-4`, `gap-6`, `max-w-7xl`) instead of arbitrary values (`p-[17px]`), unless exact dimensions are required for brand assets.
+- Build **mobile-first** responsive layouts (`sm:`, `md:`, `lg:`, `xl:`).
+
+## Assets & Exports
+
+- Save exported SVGs and images from Figma into `public/assets/` and reference them with root-relative paths (e.g., `/assets/logo.svg`).
+
+## Screenshot-Only Conversions (No Figma Link)
+
+- **Layout Breakdown First:** Before generating code, briefly outline the layout grid, flex directions, and component hierarchy inferred from the screenshot.
+- **Color Approximation:** Match visual colors in the screenshot to the closest existing semantic token in `@app/globals.css` (`bg-primary`, `bg-muted`, `text-muted-foreground`, etc.). Never invent raw hex codes unless a brand color is completely missing.
+- **Icons & Placeholders:** Replace any custom illustrations or logos visible in the screenshot with clean `lucide-react` icons or placeholder SVGs in `public/assets/`, and clearly note which assets need real files later.
