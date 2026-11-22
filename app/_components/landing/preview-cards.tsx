@@ -103,12 +103,12 @@ export function HeroPreview() {
           <MockSidebar />
           <div className="min-w-0 flex-1 p-4 sm:p-5">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-semibold">Trackly</p>
+              <p className="mt-4 text-sm font-semibold">Good morning, Gaurav</p>
               <div className="hidden rounded-full bg-secondary px-3 py-1 text-xs text-muted sm:block">
                 Search jobs, companies...
               </div>
             </div>
-            <p className="mt-4 text-sm font-semibold">Good morning, Gaurav</p>
+
             <p className="mt-1 text-xs text-muted">
               Here&apos;s your job search progress this week.
             </p>
@@ -199,7 +199,6 @@ export function DashboardPreview() {
           <div className="min-w-0 flex-1 p-4 sm:p-5">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs text-muted">Trackly</p>
                 <p className="text-sm font-semibold">Dashboard</p>
               </div>
               <Badge variant="outline">Last 3 Months</Badge>
