@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trackly — Personal Job Tracking Portal
 
-## Getting Started
+**Track. Organize. Get Hired.**
 
-First, run the development server:
+Trackly is a modern, full-stack job application tracking portal built with **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**[cite: 2, 3]. It helps job seekers centralize their job applications, stay on top of interview schedules with smart reminders, and visualize their job search funnel through interactive analytics[cite: 2].
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Centralized Application Tracking:** Keep all job applications, interview rounds, offers, and follow-ups organized in one unified workspace[cite: 2].
+- **Interactive Analytics Dashboard:** Monitor application status in real time with visual Application Funnels, Weekly Activity trends, and key metrics (Applications, Interviews, Offers, Hired)[cite: 2].
+- **Smart Reminders:** Never miss an upcoming interview, assessment, or follow-up deadline[cite: 2].
+- **Actionable Insights:** Track your overall job search performance and conversion rates across stages[cite: 2].
+- **Modern Responsive UI:** Clean, warm aesthetic featuring glassmorphism cards, interactive dashboard previews, and responsive layouts[cite: 2].
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)[cite: 3]
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Linting:** ESLint (`eslint.config.mjs`)[cite: 3]
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📂 Project Structure
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+JOB-TRACKING-PORTAL/
+├── .cursor/
+│   └── rules/
+│       └── figma-design.mdc     # Design system & UI guidelines
+├── app/
+│   ├── _components/
+│   │   ├── landing/             # Landing page sections (Hero, Features, Testimonials, CTA, Footer)
+│   │   └── ui/                  # Reusable UI primitives & components
+│   ├── dashboard/               # Authenticated dashboard routes & views
+│   ├── favicon.ico
+│   ├── globals.css              # Global styles and Tailwind configuration
+│   ├── layout.tsx               # Root application layout
+│   └── page.tsx                 # Landing page entry point
+├── lib/
+│   └── utils.ts                 # Utility functions and class helpers
+├── public/                      # Static assets, icons, and media
+├── AGENTS.md                    # AI agent workflow & project instructions
+├── eslint.config.mjs            # ESLint configuration
+├── next.config.ts               # Next.js configuration
+├── package.json                 # Project dependencies and scripts
+└── tsconfig.json                # TypeScript configuration
