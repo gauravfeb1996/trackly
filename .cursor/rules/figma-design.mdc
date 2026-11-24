@@ -49,3 +49,23 @@ alwaysApply: false
 - **Layout Breakdown First:** Before generating code, briefly outline the layout grid, flex directions, and component hierarchy inferred from the screenshot.
 - **Color Approximation:** Match visual colors in the screenshot to the closest existing semantic token in `@app/globals.css` (`bg-primary`, `bg-muted`, `text-muted-foreground`, etc.). Never invent raw hex codes unless a brand color is completely missing.
 - **Icons & Placeholders:** Replace any custom illustrations or logos visible in the screenshot with clean `lucide-react` icons or placeholder SVGs in `public/assets/`, and clearly note which assets need real files later.
+
+# Recharts & Data Visualization Agent Rules
+
+## 1. Check for Existing Graphs First (Mandatory Reuse)
+
+- **Search before creating:** Before writing any new chart component or importing from `recharts`, you MUST search the codebase (`src/components/charts/` or across `*.tsx` files) for existing chart components (e.g., `ReusableChart`, `BaseChart`, or domain-specific chart wrappers).
+- **Reuse existing wrappers:** If a generic or matching chart component already exists, import and reuse it by passing your dataset and configuration props (`data`, `dataKeyX`, `dataKeyY`, `type`, `color`).
+- **Extend, don't duplicate:** Only create a new chart component if the required visualization type (e.g., Radar, Pie, Scatter) is completely unsupported by existing wrappers—and if you build a new one, build it as a reusable generic wrapper inside `src/components/charts/` rather than inline inside a page.
+
+## 2. Component Architecture & Next.js SSG/SSR Safety
+
+- **No direct Recharts imports in pages:** Never import `LineChart`, `BarChart`, `ResponsiveContainer`, etc., directly inside `app/**/page.tsx` or `pages/**/*.tsx`. All Recharts primitives must stay encapsulated inside reusable chart components.
+- **Client-side boundary:** Every reusable chart component must include `'use client';` at the top of the file.
+- **SSR/SSG hydration guard:** When consuming a chart component inside a Next.js page or server component, always load it with `next/dynamic(..., { ssr: false })` and provide a skeleton fallback so `ResponsiveContainer` never renders at `0x0` dimensions during static generation.
+
+## 3. Data Passing & Performance Optimization
+
+- **Strict TypeScript props:** Define explicit interfaces for incoming chart data (`Record<string, string | number>[]`) and axis keys. Never use `any`.
+- **Memoization:** Wrap all reusable chart components in `React.memo` with a shallow prop comparison (`data`, `type`, `dataKeyX`, `dataKeyY`, `color`) so existing chart instances do not re-render when parent state changes.
+- **Stable data references:** When passing static or derived data to a chart component, define the array outside the render cycle or wrap it in `useMemo` to preserve reference equality.
