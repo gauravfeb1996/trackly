@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Mail, User } from "lucide-react";
 
-import { TopBar } from "@/app/_components/dashboard/top-bar";
+import { HeaderActions } from "@/app/_components/dashboard/header-actions";
+import { PageHeader } from "@/app/_components/dashboard/page-header";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 import { Card } from "@/app/_components/ui/card";
@@ -97,7 +98,9 @@ async function ApplicationDetailsPage({
 
   return (
     <div className="space-y-6">
-      <TopBar />
+      <PageHeader>
+        <HeaderActions />
+      </PageHeader>
 
       <Link
         href="/applications"

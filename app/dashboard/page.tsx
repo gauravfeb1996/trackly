@@ -1,8 +1,12 @@
-import { ActivityChart, StatCard } from "@/app/_components/dashboard/dashboard-charts";
+import {
+  ActivityChart,
+  StatCard,
+} from "@/app/_components/dashboard/dashboard-charts";
 import { ApplicationsList } from "@/app/_components/dashboard/applications-list";
 import { InterviewsList } from "@/app/_components/dashboard/interviews-list";
 import { TopBar } from "@/app/_components/dashboard/top-bar";
 import { Select } from "@/app/_components/ui/select";
+import { Suspense } from "react";
 
 const stats = [
   {
@@ -104,18 +108,25 @@ export default function Page() {
           defaultValue="week"
         />
       </div>
+      <Suspense>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {stats.map((stat) => (
+            <StatCard key={stat.label} {...stat} />
+          ))}
+        </div>
+      </Suspense>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {stats.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
-        ))}
-      </div>
-
-      <ActivityChart data={activity} />
+      <Suspense>
+        <ActivityChart data={activity} />
+      </Suspense>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <InterviewsList interviews={interviews} />
-        <ApplicationsList applications={applications} />
+        <Suspense>
+          <InterviewsList interviews={interviews} />
+        </Suspense>
+        <Suspense>
+          <ApplicationsList applications={applications} />
+        </Suspense>
       </div>
     </div>
   );

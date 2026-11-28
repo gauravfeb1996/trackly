@@ -1,3 +1,7 @@
+"use client";
+
+import { startTransition, useEffect, useState } from "react";
+import Link from "next/link";
 import {
   ChevronLeft,
   ChevronRight,
@@ -11,7 +15,12 @@ import {
   ApplicationsTable,
   type Application,
 } from "@/app/_components/applications/applications-table";
-import { TopBar } from "@/app/_components/dashboard/top-bar";
+import {
+  type SavedApplication,
+} from "@/app/_components/applications/application-schema";
+import { readSavedApplications } from "@/app/_components/applications/application-storage";
+import { HeaderActions } from "@/app/_components/dashboard/header-actions";
+import { PageHeader } from "@/app/_components/dashboard/page-header";
 import { Button } from "@/app/_components/ui/button";
 import { Card } from "@/app/_components/ui/card";
 import { Input } from "@/app/_components/ui/input";
@@ -104,9 +113,49 @@ const applications: Application[] = [
 const pages = [1, 2, 3, 4, 5];
 
 export default function Page() {
+  const [savedApplications, setSavedApplications] = useState<
+    SavedApplication[]
+  >([]);
+  const [storageError, setStorageError] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = readSavedApplications();
+      startTransition(() => setSavedApplications(saved));
+    } catch (error) {
+      startTransition(() =>
+        setStorageError(
+          error instanceof Error
+            ? `Unable to load saved applications: ${error.message}`
+            : "Unable to load saved applications from this browser.",
+        ),
+      );
+    }
+  }, []);
+
+  const displayedApplications: Application[] = [
+    ...applications,
+    ...savedApplications.map((application) => ({
+      id: application.id,
+      company: application.companyName,
+      role: application.jobTitle,
+      stage: application.stage,
+      appliedOn: new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }).format(new Date(`${application.appliedDate}T00:00:00`)),
+      status: application.status,
+      initials: application.companyName.charAt(0).toUpperCase(),
+      accent: "bg-orange-500",
+    })),
+  ];
+
   return (
     <div className="space-y-6">
-      <TopBar />
+      <PageHeader>
+        <HeaderActions />
+      </PageHeader>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -117,11 +166,22 @@ export default function Page() {
             Track all your job applications in one place.
           </p>
         </div>
-        <Button variant="primary">
-          <Plus className="size-4" />
-          Add Application
+        <Button variant="primary" asChild>
+          <Link href="/applications/create">
+            <Plus className="size-4" />
+            Add Application
+          </Link>
         </Button>
       </div>
+
+      {storageError && (
+        <p
+          role="alert"
+          className="rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
+        >
+          {storageError}
+        </p>
+      )}
 
       <Card className="p-4">
         {/* Filters */}
@@ -184,12 +244,15 @@ export default function Page() {
 
         {/* Table */}
         <div className="mt-4">
-          <ApplicationsTable data={applications} />
+          <ApplicationsTable data={displayedApplications} />
         </div>
 
         {/* Pagination */}
         <div className="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
-          <p className="text-sm text-muted">Showing 1-8 of 42 applications</p>
+          <p className="text-sm text-muted">
+            Showing 1-{displayedApplications.length} of{" "}
+            {42 + savedApplications.length} applications
+          </p>
           <nav className="flex items-center gap-1">
             <button
               type="button"
